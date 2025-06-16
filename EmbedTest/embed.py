@@ -42,6 +42,27 @@ def main():
     # Add this after creating the embeddings
     outcomes = df['Outcome'].values
 
+
+    # Get feature names (exclude outcome)
+    feature_names = df.columns[:-1]
+
+    # Create components DataFrame
+    components_df = pd.DataFrame(
+        pca.components_,
+        columns=feature_names,
+        index=[f'PC{i+1}' for i in range(EMBEDDING_DIMENSIONS)]
+    )
+
+    # Print components with explained variance
+    print("\nPrincipal Component Loadings:")
+    for i in range(EMBEDDING_DIMENSIONS):
+        variance = pca.explained_variance_ratio_[i]
+        print(f"\nPC{i+1} ({variance:.1%} variance):")
+        print(components_df.iloc[i].sort_values(ascending=False))
+
+
+
+
     # 3D Plot with outcome coloring
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection='3d')
@@ -70,7 +91,6 @@ def main():
     ax.set_zlabel('PCA Component 3')
     plt.title('Patient Vector Embeddings')
     plt.show()
-
 
 if __name__ == "__main__":
     main()
